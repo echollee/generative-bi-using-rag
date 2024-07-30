@@ -5,7 +5,6 @@ from nlq.business.connection import ConnectionManagement
 from nlq.data_access.database import RelationDatabase
 from utils.navigation import make_sidebar
 
-
 # global variables
 
 db_type_mapping = {

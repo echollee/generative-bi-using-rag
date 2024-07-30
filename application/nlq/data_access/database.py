@@ -30,7 +30,6 @@ class RelationDatabase():
         db_password = None
         if db_type == 'redshift-iam':
             redshift = boto3.client("redshift")
-            # cluster_name = 'prod-redshift-d1-internal-cluster'
             resp = redshift.get_cluster_credentials_with_iam(
                 DbName=db_name,
                 ClusterIdentifier=REDSHIFT_CLUSTER_IDENTITIER,
@@ -40,7 +39,6 @@ class RelationDatabase():
             db_password = resp['DbPassword']
         if db_type == 'redshift-serverless-iam':
             redshift = boto3.client("redshift-serverless")
-            # workGroupName = 'prod-red-serverless-grp-d1'
             resp = redshift.get_credentials(
                 dbName=db_name,
                 workgroupName=REDSHIFT_SERVERLESS_WORK_GRP,

@@ -50,6 +50,7 @@ REDSHIFT_CLUSTER_IDENTITIER = os.getenv('REDSHIFT_CLUSTER_IDENTITIER')
 
 REDSHIFT_SERVERLESS_WORK_GRP = os.getenv('REDSHIFT_SERVERLESS_WORK_GRP')
 
+
 def get_opensearch_parameter():
     try:
         session = boto3.session.Session()
@@ -91,6 +92,7 @@ def get_bedrock_parameter():
     except ClientError as e:
         logging.error(e)
     return bedrock_ak_sk_info
+
 
 if OPENSEARCH_TYPE == "service":
     opensearch_host, opensearch_port, opensearch_username, opensearch_password = get_opensearch_parameter()
