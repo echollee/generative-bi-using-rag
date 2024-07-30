@@ -3,23 +3,58 @@ import logging
 import sqlalchemy
 import sqlalchemy as db
 from sqlalchemy import text, Column, inspect
+import boto3
 
 from nlq.data_access.dynamo_connection import ConnectConfigEntity
 
+from utils.env_var import REDSHIFT_CLUSTER_IDENTITIER, REDSHIFT_SERVERLESS_WORK_GRP
+
 logger = logging.getLogger(__name__)
+
 
 class RelationDatabase():
     db_mapping = {
         'mysql': 'mysql+pymysql',
         'postgresql': 'postgresql+psycopg2',
         'redshift': 'postgresql+psycopg2',
+        'redshift-iam': 'postgresql+psycopg2',
+        'redshift-serverless-iam': 'postgresql+psycopg2',
         'starrocks': 'starrocks',
         'clickhouse': 'clickhouse',
         # Add more mappings here for other databases
     }
 
     @classmethod
+    def get_redshift_resp_with_iam(cls, db_type, db_name):
+        db_user = None
+        db_password = None
+        if db_type == 'redshift-iam':
+            redshift = boto3.client("redshift")
+            # cluster_name = 'prod-redshift-d1-internal-cluster'
+            resp = redshift.get_cluster_credentials_with_iam(
+                DbName=db_name,
+                ClusterIdentifier=REDSHIFT_CLUSTER_IDENTITIER,
+                DurationSeconds=1000,
+            )
+            db_user = resp['DbUser']
+            db_password = resp['DbPassword']
+        if db_type == 'redshift-serverless-iam':
+            redshift = boto3.client("redshift-serverless")
+            # workGroupName = 'prod-red-serverless-grp-d1'
+            resp = redshift.get_credentials(
+                dbName=db_name,
+                workgroupName=REDSHIFT_SERVERLESS_WORK_GRP,
+                durationSeconds=1000
+            )
+            db_user = resp['dbUser']
+            db_password = resp['dbPassword']
+
+        return db_user, db_password
+
+    @classmethod
     def get_db_url(cls, db_type, user, password, host, port, db_name):
+        if db_type in ('redshift-iam', 'redshift-serverless-iam'):
+            user, password = cls.get_redshift_resp_with_iam(db_type, db_name)
         db_url = db.engine.URL.create(
             drivername=cls.db_mapping[db_type],
             username=user,

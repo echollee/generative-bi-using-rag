@@ -12,6 +12,8 @@ db_type_mapping = {
     'mysql': 'MySQL',
     'postgresql': 'PostgreSQL',
     'redshift': 'Redshift',
+    'redshift-iam': 'Redshift(IAM)',
+    'redshift-serverless-iam': 'Redshift Serverless(IAM)',
     'starrocks': 'StarRocks',
     'clickhouse': 'Clickhouse',
 }
