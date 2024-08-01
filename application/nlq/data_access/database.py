@@ -16,9 +16,10 @@ class RelationDatabase():
     db_mapping = {
         'mysql': 'mysql+pymysql',
         'postgresql': 'postgresql+psycopg2',
+        'protonbase': 'postgresql+psycopg2',
         'redshift': 'postgresql+psycopg2',
         'redshift-iam': 'postgresql+psycopg2',
-        'redshift-serverless-iam': 'postgresql+psycopg2',
+        'redshift-serverless-iam': 'redshift+psycopg2',
         'starrocks': 'starrocks',
         'clickhouse': 'clickhouse',
         # Add more mappings here for other databases
@@ -84,8 +85,9 @@ class RelationDatabase():
 
         if db_type == 'postgresql':
             schemas = [schema for schema in inspector.get_schema_names() if
-                       schema not in ('pg_catalog', 'information_schema', 'public')]
-        elif db_type in ('redshift', 'mysql', 'starrocks', 'clickhouse'):
+                       schema not in ('pg_catalog', 'information_schema')]
+        elif db_type in (
+        'protonbase', 'redshift', 'redshift-iam', 'redshift-serverless-iam', 'mysql', 'starrocks', 'clickhouse'):
             schemas = inspector.get_schema_names()
         else:
             raise ValueError("Unsupported database type")
@@ -107,8 +109,8 @@ class RelationDatabase():
         # connection = engine.connect()
         metadata = db.MetaData()
         for s in schemas:
-            metadata.reflect(bind=engine, schema=s)
-        metadata.reflect(bind=engine)
+            metadata.reflect(bind=engine, schema=s, views=True)
+        # metadata.reflect(bind=engine)
         return metadata
 
     @classmethod

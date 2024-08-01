@@ -42,10 +42,13 @@ def main():
 
         if selected_conn_name:
             conn_config = ConnectionManagement.get_conn_config_by_name(selected_conn_name)
+            print('selected_conn_name: ', selected_conn_name)
             schema_names = st.multiselect("Schema Name", ConnectionManagement.get_all_schemas_by_config(conn_config))
+            print('schema_names: ', schema_names)
             tables_from_db = ConnectionManagement.get_table_name_by_config(conn_config, schema_names)
-            print(tables_from_db)
+            print('tables_from_db: ', tables_from_db)
             selected_tables = st.multiselect("Select tables included in this profile", tables_from_db)
+            print('selected_tables: ', selected_tables)
             comments = st.text_input("Comments")
 
             if st.button('Create Profile', type='primary'):

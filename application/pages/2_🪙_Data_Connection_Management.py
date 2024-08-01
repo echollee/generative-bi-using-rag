@@ -10,6 +10,7 @@ from utils.navigation import make_sidebar
 db_type_mapping = {
     'mysql': 'MySQL',
     'postgresql': 'PostgreSQL',
+    'protonbase': 'ProtonBase',
     'redshift': 'Redshift',
     'redshift-iam': 'Redshift-IAM',
     'redshift-serverless-iam': 'Redshift-Serverless-IAM',
