@@ -1,8 +1,7 @@
 import logging
 
-import sqlalchemy
 import sqlalchemy as db
-from sqlalchemy import text, Column, inspect
+from sqlalchemy import  Column, inspect
 import boto3
 
 from nlq.data_access.dynamo_connection import ConnectConfigEntity
